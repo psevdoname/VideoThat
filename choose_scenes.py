@@ -42,8 +42,9 @@ def build_song_segments(target_song, segments_df, songs_df): # segments_df = all
 
 def main():
 
-    target_song = librosa.load('Arctic Monkeys - '\
-                    'Do I Wanna Know (Official Video)-bpOSxM0rNPM.webm.mp3')
+    # target_song = librosa.load('Arctic Monkeys - '\
+    #                 'Do I Wanna Know (Official Video)-bpOSxM0rNPM.webm.mp3')
+    target_song = librosa.load('./music/balbgur.mp3')
     target_song = target_song[0]
     segments_df = pd.read_pickle('scene_db.pkl')
     onset_strengths = segments_df.segment.apply(librosa.onset.onset_strength)
@@ -54,5 +55,6 @@ def main():
     names, starts, ends = list(zip(*matches))
     matches = pd.DataFrame({'name': names, 'start': starts, 'end': ends})
     matches.to_pickle('chosen_scenes.pkl')
+    print("FINISHED CHOICE")
 if __name__=='__main__':
     main()

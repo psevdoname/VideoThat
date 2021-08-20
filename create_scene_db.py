@@ -7,17 +7,20 @@ import tqdm
 
 
 def create_song_db(video_files, base_path):
+    print("-------------------------\n\n\n")
+    print(tqdm.tqdm(video_files))
     songs = [librosa.load(str(i)) for i in tqdm.tqdm(video_files)] # This is SLOW
     songs_gist = [s[0] for s in songs]
     names = [f.stem for f in video_files]
 
     scenes = []
-
+    print("Creating song db for")
     for name in names:
         scenesDf = pd.read_csv(base_path / (name + '-Scenes.csv'), skiprows = 1)
         scenes.append(scenesDf['Start Time (seconds)'])
 
     df = pd.DataFrame({'name':names, 'song_wave':songs_gist, 'scene_start_times_sec':scenes})
+
     return df
 
 def create_scene_db(song_df):
@@ -33,10 +36,10 @@ def create_scene_db(song_df):
 def main():
     base_path = Path('data/taylor')
     # create a list of taylor song folder paths
-    taylor_swifts = [path for path in base_path.glob('Taylor Swift*') if path.is_dir()]
+    taylor_swifts = [path for path in base_path.glob('*-*') if path.is_dir()]
     # look for the largest file which is the video file
     video_files = [max(taylor_song.glob('*'), key=lambda f: f.stat().st_size) for taylor_song in taylor_swifts]
-
+    print(video_files)
     df = create_song_db(video_files, base_path)
     df.to_pickle("song_db.pkl")
 
